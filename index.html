@@ -18,11 +18,48 @@
     }
 
     header {
-      text-align: center;
+      position: relative;
+      display: flex;
+      justify-content: center; /* centraliza a logo */
+      align-items: center;
+      margin-bottom: 20px;
     }
 
     header img {
       max-height: 80px;
+    }
+
+    .hora-container {
+      position: absolute;
+      right: 0; /* canto direito */
+      top: 50%;
+      transform: translateY(-50%);
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+    }
+
+    .hora-container i {
+      font-size: 24px;
+      color: #ccc;
+      margin-right: 6px;
+    }
+
+    .hora-linha {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .hora-texto {
+      font-size: 18px;
+      color: #fff;
+    }
+
+    .atualiza {
+      font-size: 13px;
+      color: #ff5555;
+      margin-top: 4px;
     }
 
     h1, h2 {
@@ -69,30 +106,6 @@
       margin-top: 10px;
     }
 
-    .hora-container {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      margin: 10px 0 10px;
-    }
-
-    .hora-container i {
-      font-size: 36px;
-      color: #ccc;
-    }
-
-    .hora-texto {
-      font-size: 22px;
-      margin-top: 6px;
-      color: #fff;
-    }
-
-    .atualiza {
-      font-size: 13px;
-      color: #ff5555;
-      margin-top: 4px;
-    }
-
     .valor.animado {
       animation: pulse 1s ease-in-out;
     }
@@ -114,6 +127,16 @@
     }
 
     @media (max-width: 768px) {
+      header {
+        flex-direction: column;
+        gap: 10px;
+      }
+      .hora-container {
+        position: static;
+        transform: none;
+        align-items: center;
+        margin-top: 10px;
+      }
       .card {
         flex: 1 1 100%;
       }
@@ -125,13 +148,15 @@
 
   <header>
     <img src="gp_logo.png" alt="Logo Marca">
-  </header>
 
-  <div class="hora-container">
-    <i class="fas fa-clock"></i>
-    <div class="hora-texto" id="horaAtual">--:--</div>
-    <div class="atualiza">Atualiza a cada minuto</div>
-  </div>
+    <div class="hora-container">
+      <div class="hora-linha">
+        <i class="fas fa-clock"></i>
+        <div class="hora-texto" id="horaAtual">--:--</div>
+      </div>
+      <div class="atualiza">Atualiza a cada minuto</div>
+    </div>
+  </header>
 
   <div class="section">
     <h2>Carcaça</h2>
@@ -148,7 +173,10 @@
     <div class="resumo-container" id="qualidade"></div>
   </div>
 
-<!-- ... Cabeçalho e estilos permanecem iguais até o script ... -->
+  <div class="section">
+    <h2>Cobertura</h2>
+    <div class="resumo-container" id="cobertura"></div>
+  </div>
 
 <script>
   const cores = {
@@ -163,7 +191,8 @@
   const ultimosDados = {
     carcaca: {},
     producao: {},
-    qualidade: {}
+    qualidade: {},
+    cobertura: {}
   };
 
   function atualizarHora() {
@@ -174,7 +203,7 @@
 
   async function carregarResumo(endpoint, containerId) {
     try {
-      const response = await fetch(`http://192.168.0.220:8080/gp/api/resumo/${endpoint}`);
+       const response = await fetch(`http://192.168.0.109:8080/api/resumo/${endpoint}`);
       const data = await response.json();
 
       const container = document.getElementById(containerId);
@@ -213,7 +242,6 @@
         card.appendChild(valorHtml);
         container.appendChild(card);
 
-        // Atualiza valor armazenado para próxima comparação
         ultimosDados[containerId][chave] = novoValor;
       }
 
@@ -261,12 +289,12 @@
     carregarResumo('carcaca', 'carcaca');
     carregarResumo('producao', 'producao');
     carregarResumo('qualidade', 'qualidade');
+    carregarResumo('cobertura', 'cobertura');
   }
 
   atualizarTudo();
-  setInterval(atualizarTudo, 60000); // Atualiza a cada minuto
+  setInterval(atualizarTudo, 60000);
 </script>
-
 
 </body>
 </html>
